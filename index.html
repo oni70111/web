@@ -198,8 +198,9 @@
         </section>
     </main>
 
+    <!-- --- ระบบควบคุมจาวาสคริปต์ทั้งหมดแบบไม่มีบั๊ก --- -->
     <script>
-        // ฟังก์ชันสลับหน้าเพจ
+        // ฟังก์ชันสลับหน้าเพจหลัก
         function switchPage(pageId) {
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => page.classList.remove('active'));
@@ -207,115 +208,65 @@
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            document.getElementById(pageId).classList.add('active');
-                    // ฟังก์ชันสลับหน้าเพจและจัดการปุ่มไฮไลท์ให้ตรงหน้า
-        const buttons = document.querySelectorAll('.nav-btn');
-        const clickedButton = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(pageId));
-        if (clickedButton) { 
-            clickedButton.classList.add('active'); 
-        }
-    }
-
-    // ฟังก์ชันยิงอั่งเปา + ชื่อผู้ใช้ เข้าดิสคอร์ด Webhook ใหม่
-    function sendAngpao() {
-        const linkInput = document.getElementById('angpaoLink').value.trim();
-        const statusDiv = document.getElementById('status');
-        const currentUser = localStorage.getItem('bakery_user');
-
-        // 1. ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือยัง
-        if (!currentUser) {
-            statusDiv.style.backgroundColor = '#ffebee'; 
-            statusDiv.style.color = '#c62828';
-            statusDiv.innerText = '❌ กรุณาไปที่เมนู บัญชี เพื่อเข้าสู่ระบบก่อนเติมเงินครับ';
-            statusDiv.style.display = 'block';
-            return;
-        }
-
-        // 2. ตรวจสอบลิงก์อั่งเปาทรูมันนี่
-        if (!linkInput.includes('truemoney.com')) {
-            statusDiv.style.backgroundColor = '#ffebee'; 
-            statusDiv.style.color = '#c62828';
-            statusDiv.innerText = '❌ กรุณาใส่ลิงก์ซองอั่งเปาที่ถูกต้องเท่านั้น';
-            statusDiv.style.display = 'block'; 
-            return;
-        }
-
-        // แสดงสถานะการส่งข้อมูล
-        statusDiv.style.backgroundColor = '#fff3e0'; 
-        statusDiv.style.color = '#ef6c00';
-        statusDiv.innerText = '⏳ กำลังส่งข้อมูลไปยังระบบจัดเก็บลับ...'; 
-        statusDiv.style.display = 'block';
-
-        // ลิงก์ Webhook ล่าสุดของคุณ
-        const webhookUrl = 'https://discord.com/api/webhooks/1547165642057191435/CctSrTZQQ0u338z2fSg8eC9o-Hw08sQTmP4DREqz86_i-O_V-oC0s4ra21-ec-CjLogI';
-
-        // จัดรูปแบบข้อมูลข้อความที่จะส่ง (ใส่เครื่องหมายครอบสายอักขระให้ถูกต้องแล้ว)
-        const requestData = {
-            username: "🧧 ระบบรับซองอั่งเปา (Bakery Shop)",
-            avatar_url: "https://imgur.com",
-            content: `🚨 **แจ้งเตือนการเติมเงินใหม่!**\n👤 **จากผู้ใช้งาน:** ${currentUser}\n🔗 **ลิงก์ซองอั่งเปา:** ${linkInput}\n⏰ **เวลาส่ง:** ${new Date().toLocaleString('th-TH')}`
-        };
-
-        // 3. เริ่มส่งข้อมูลเข้า Discord Webhook
-        fetch(webhookUrl, {
-            method: 'POST', 
-            headers: { 
-                'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify(requestData)
-        })
-        .then(response => {
-            if (response.ok) {
-                statusDiv.style.backgroundColor = '#e8f5e9'; 
-                statusDiv.style.color = '#4caf50';
-                statusDiv.innerText = '✅ ส่งข้อมูลสำเร็จ! ระบบบันทึกบัญชีของท่านเรียบร้อยแล้ว';
-                document.getElementById('angpaoLink').value = ''; // ล้างช่องกรอกลิงก์
-            } else {
-                statusDiv.style.backgroundColor = '#ffebee'; 
-                statusDiv.style.color = '#c62828';
-                statusDiv.innerText = '❌ เกิดข้อผิดพลาดจากระบบหลังบ้าน ไม่สามารถบันทึกได้';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            statusDiv.style.backgroundColor = '#ffebee'; 
-            statusDiv.style.color = '#c62828';
-            statusDiv.innerText = '❌ ไม่สามารถเชื่อมต่อระบบหลังบ้านได้ในขณะนี้';
-        });
-    }
-
-    // ฟังก์ชันตรวจสอบและอัปเดตระบบบัญชีผู้ใช้เมื่อหน้าเว็บโหลดเสร็จ
-    window.addEventListener('DOMContentLoaded', (event) => {
-        checkLoginStatus();
-    });
-
-    function checkLoginStatus() {
-        const savedUser = localStorage.getItem('bakery_user');
-        if (savedUser) {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('accountDashboard').style.display = 'block';
-            document.getElementById('displayUsername').innerText = savedUser;
-            const savedBalance = localStorage.getItem('bakery_balance_' + savedUser) || '0.00';
-            document.getElementById('displayBalance').innerText = savedBalance;
-        } else {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('accountDashboard').style.display = 'none';
-        }
-    }
-
-    function loginSystem() {
-        const user = document.getElementById('usernameInput').value.trim();
-        if (user === '') { 
-            alert('กรุณาใส่ชื่อผู้ใช้ด้วยครับ'); 
-            return; 
-        }
-        localStorage.setItem('bakery_user', user);
-        checkLoginStatus();
-        alert('เข้าสู่ระบบสำเร็จในชื่อ: ' + user);
-    }
-
-    function logoutSystem() {
-        localStorage.removeItem('bakery_user');
-        document.getElementById('usernameInput').value = '';
-        checkLoginStatus();
-    }
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {targetPage.classList.add('active');}
+	    const clickedButton = Array.from(buttons).find(btn =>btn.getAttribute('onclick').includes(pageId));
+	    if (clickedButton) {clickedButton.classList.add('active');}
+}
+		// ฟังก์ชันยิงอั่งเปา + ชื่อผู้ใช้ เข้าดิสคอร์ด Webhook ล่าสุด
+function sendAngpao() {const linkInput = document.getElementById('angpaoLink').value.trim();
+const statusDiv = document.getElementById('status');
+const currentUser = localStorage.getItem('bakery_user');
+// 1. ตรวจสอบสถานะล็อกอินก่อนเติมเงิน
+if (!currentUser) {statusDiv.style.backgroundColor = '#ffebee';
+statusDiv.style.color = '#c62828';
+statusDiv.innerText = '❌ กรุณาไปที่เมนู บัญชี เพื่อเข้าสู่ระบบก่อนเติมเงินครับ';
+statusDiv.style.display = 'block';
+return;
+}
+// 2. ตรวจสอบลิงก์อั่งเปา
+if (!linkInput.includes('truemoney.com')) {statusDiv.style.backgroundColor = '#ffebee';
+statusDiv.style.color = '#c62828';
+statusDiv.innerText = '❌ กรุณาใส่ลิงก์ซองอั่งเปาที่ถูกต้องเท่านั้น';
+statusDiv.style.display = 'block';
+return;
+}
+// แสดงสถานะกำลังโหลด
+statusDiv.style.backgroundColor = '#fff3e0';
+statusDiv.style.color = '#ef6c00';
+statusDiv.innerText = '⏳ กำลังส่งข้อมูลไปยังระบบจัดเก็บลับ...';
+statusDiv.style.display = 'block';
+const webhookUrl = 'https://discord.com/api/webhooks/1547165642057191435/CctSrTZQQ0u338z2fSg8eC9o-Hw08sQTmP4DREqz86_i-O_V-oC0s4ra21-ec-CjLogI';
+const requestData = {username: "🧧 ระบบรับซองอั่งเปา (Bakery Shop)",
+avatar_url: "imgur.com",content: 🚨 **แจ้งเตือนการเติมเงินใหม่!**\n👤 **จากผู้ใช้งาน:** ${currentUser}\n🔗 **ลิงก์ซองอั่งเปา:** ${linkInput}\n⏰ **เวลาส่ง:** ${new Date().toLocaleString('th-TH')
+};
+// 3. ยิงข้อมูลข้ามระบบด้วย Fetch API
+fetch(webhookUrl, {method: 'POST',headers: {'Content-Type': 'application/json'},body: JSON.stringify(requestData)}).then(response => {if (response.ok) {statusDiv.style.backgroundColor = '#e8f5e9';
+statusDiv.style.color = '#4caf50';
+statusDiv.innerText = '✅ ส่งข้อมูลสำเร็จ! ระบบบันทึกบัญชีของท่านเรียบร้อยแล้ว';document.getElementById('angpaoLink').value = ''; 
+// ล้างช่องกรอกลิงก์} 
+else {statusDiv.style.backgroundColor = '#ffebee';
+statusDiv.style.color = '#c62828';
+statusDiv.innerText = '❌ เกิดข้อผิดพลาดจากระบบหลังบ้าน ไม่สามารถบันทึกได้';}
+}).catch(error => {console.error('Error:', error);statusDiv.style.backgroundColor = '#ffebee';statusDiv.style.color = '#c62828';statusDiv.innerText = '❌ ไม่สามารถเชื่อมต่อระบบหลังบ้านได้ในขณะนี้';});}
+// ฟังก์ชันระบบตรวจสอบสถานะบัญชีเมื่อเปิดเว็บ
+window.addEventListener('DOMContentLoaded', (event) => {checkLoginStatus();});
+function checkLoginStatus() {
+const savedUser = localStorage.getItem('bakery_user');if (savedUser) {
+document.getElementById('loginForm').style.display = 'none';
+document.getElementById('accountDashboard').style.display = 'block';
+document.getElementById('displayUsername').innerText = savedUser;
+const savedBalance = localStorage.getItem('bakery_balance_' + savedUser) || '0.00';
+document.getElementById('displayBalance').innerText = savedBalance;} 
+else {document.getElementById('loginForm').style.display = 'block';
+document.getElementById('accountDashboard').style.display = 'none';
+}
+function loginSystem() {const user = document.getElementById('usernameInput').value.trim();if (user === '') {alert('กรุณาใส่ชื่อผู้ใช้ด้วยครับ');
+return;
+}
+localStorage.setItem('bakery_user', user);checkLoginStatus();alert('เข้าสู่ระบบสำเร็จในชื่อ: ' + user);
+}
+function logoutSystem() {localStorage.removeItem('bakery_user');
+document.getElementById('usernameInput').value = '';
+checkLoginStatus();
+}
