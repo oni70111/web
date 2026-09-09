@@ -3,29 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweet Horizon Bakery - หน้าแรก</title>
+    <title>Sweet Horizon Bakery</title>
     <style>
         :root {
             --primary-color: #6d4c41;
             --secondary-color: #d7ccc8;
+            --accent-color: #ffb74d;
             --bg-color: #faf8f5;
             --text-color: #4e342e;
+            --success-color: #4caf50;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-        header { background-color: var(--primary-color); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+
+        header {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         header h1 { color: var(--bg-color); font-size: 1.5rem; }
         nav { display: flex; gap: 1rem; }
-        nav a { color: var(--secondary-color); text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
-        nav a:hover, nav a.active { color: #fff; background-color: rgba(255,255,255,0.1); }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        nav button:hover, nav button.active {
+            color: #fff;
+            background-color: rgba(255,255,255,0.1);
+        }
+
         main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { color: var(--primary-color); margin-bottom: 1.5rem; border-bottom: 2px solid var(--secondary-color); padding-bottom: 0.5rem; }
+
+        /* หน้าแรก */
         .hero { text-align: center; padding: 4rem 1rem; background: linear-gradient(rgba(109, 76, 65, 0.1), rgba(109, 76, 65, 0.05)); border-radius: 12px; margin-bottom: 2rem; }
-        .hero h3 { font-size: 2.5rem; color: var(--primary-color); }
+        .hero h3 { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-color); }
+
+        /* รายการสินค้า */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
-        .product-card { background: #fff; border: 1px solid var(--secondary-color); border-radius: 8px; overflow: hidden; text-align: center; padding-bottom: 1rem; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+        .product-card { background: #fff; border: 1px solid var(--secondary-color); border-radius: 8px; overflow: hidden; text-align: center; padding-bottom: 1rem; }
         .product-img-placeholder { background-color: var(--secondary-color); height: 180px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .product-card h3 { margin: 1rem 0 0.5rem; }
         .product-card p { color: var(--primary-color); font-weight: bold; }
+
+        /* ฟอร์มและกล่องเนื้อหา */
+        .form-container { max-width: 500px; margin: 2rem auto; padding: 2.5rem; background: #fff; border-radius: 12px; border: 1px solid var(--secondary-color); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .subtitle { font-size: 0.9rem; color: #7f8c8d; text-align: center; margin-bottom: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 2px solid var(--secondary-color); border-radius: 6px; font-size: 1rem; color: var(--text-color); }
+        .form-group input:focus { border-color: var(--primary-color); outline: none; }
+        
+        .btn { display: inline-block; width: 100%; background-color: var(--primary-color); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; text-align: center; }
+        .btn:hover { background-color: #5d3f36; }
+        .status-msg { margin-top: 1.5rem; text-align: center; font-weight: bold; display: none; padding: 0.5rem; border-radius: 4px; }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 1rem; }
+            nav { width: 100%; justify-content: space-between; }
+            nav button { padding: 0.5rem 0.2rem; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
@@ -33,37 +95,227 @@
     <header>
         <h1>🍞 Bakery Shop</h1>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="list.html">รายการสินค้า</a>
-            <a href="topup.html">เติมเงิน</a> <!-- เปลี่ยนตรงนี้ให้เป็น topup.html -->
-            <a href="#">บัญชี</a>
+            <button class="nav-btn active" onclick="switchPage('home')">Home</button>
+            <button class="nav-btn" onclick="switchPage('products')">รายการสินค้า</button>
+            <button class="nav-btn" onclick="switchPage('topup')">เติมเงิน</button>
+            <button class="nav-btn" onclick="switchPage('account')">บัญชี</button>
         </nav>
     </header>
 
     <main>
-        <div class="hero">
-            <h3>ยินดีต้อนรับสู่ร้านขนมอบแสนอร่อย</h3>
-            <p>อบสดใหม่จากเตาทุกวัน ด้วยวัตถุดิบพรีเมียมเพื่อคุณ</p>
-        </div>
-        <h2>สินค้าแนะนำประจำวัน (คลิกที่รูปเพื่อดูรายการทั้งหมด)</h2>
-        <br>
-        <div class="product-grid">
-            
-            <!-- ใช้แท็ก <a> ครอบกล่องสินค้า เพื่อให้คลิกแล้วเด้งไปไฟล์ list.html -->
-            <a href="list.html" class="product-card">
-                <div class="product-img-placeholder">🥐 Croissant</div>
-                <h3>ครัวซองต์เนยสด</h3>
-                <p>85 ฿</p>
-            </a>
-            
-            <a href="list.html" class="product-card">
-                <div class="product-img-placeholder">🍰 Strawberry Shortcake</div>
-                <h3>สตรอว์เบอร์รี่ช็อตเค้ก</h3>
-                <p>120 ฿</p>
-            </a>
+        <!-- 1. ส่วนหน้าแรก (Home) -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h3>ยินดีต้อนรับสู่ร้านขนมอบแสนอร่อย</h3>
+                <p>อบสดใหม่จากเตาทุกวัน ด้วยวัตถุดิบพรีเมียมเพื่อคุณ</p>
+            </div>
+            <h2>สินค้าแนะนำประจำวัน</h2>
+            <br>
+            <div class="product-grid">
+                <div class="product-card" onclick="switchPage('products')" style="cursor: pointer;">
+                    <div class="product-img-placeholder">🥐 Croissant</div>
+                    <h3>ครัวซองต์เนยสด (คลิกดูรายการทั้งหมด)</h3>
+                    <p>85 ฿</p>
+                </div>
+                <div class="product-card" onclick="switchPage('products')" style="cursor: pointer;">
+                    <div class="product-img-placeholder">🍰 Strawberry Shortcake</div>
+                    <h3>สตรอว์เบอร์รี่ช็อตเค้ก (คลิกดูรายการทั้งหมด)</h3>
+                    <p>120 ฿</p>
+                </div>
+            </div>
+        </section>
 
-        </div>
+        <!-- 2. ส่วนหน้ารายการสินค้า (Products) -->
+        <section id="products" class="page">
+            <h2>📋 รายการสินค้าทั้งหมดในร้าน</h2>
+            <br>
+            <div class="product-grid">
+                <div class="product-card">
+                    <div class="product-img-placeholder">🥐 Croissant</div>
+                    <h3>ครัวซองต์เนยสด</h3>
+                    <p>85 ฿</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-img-placeholder">🍰 Strawberry Shortcake</div>
+                    <h3>สตรอว์เบอร์รี่ช็อตเค้ก</h3>
+                    <p>120 ฿</p>
+                </div>
+                <div class="product-card">
+                    <div class="product-img-placeholder">🥖 Baguette</div>
+                    <h3>ขนมปังฝรั่งเศส</h3>
+                    <p>65 ฿</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. ส่วนหน้าเติมเงิน (Topup) -->
+        <section id="topup" class="page">
+            <div class="form-container">
+                <h2>🧧 เติมเงินผ่านซองอั่งเปา</h2>
+                <p class="subtitle">ระบบจะส่งลิงก์ซองไปยัง Discord พร้อมชื่อบัญชีของคุณ</p>
+                
+                <div class="form-group">
+                    <label for="angpaoLink">วางลิงก์ซองอั่งเปา (TrueMoney Wallet)</label>
+                    <input type="text" id="angpaoLink" placeholder="https://truemoney.com..." required>
+                </div>
+                
+                <button class="btn" onclick="sendAngpao()">ตรวจสอบและส่งซอง</button>
+                <div id="status" class="status-msg"></div>
+            </div>
+        </section>
+
+        <!-- 4. ส่วนหน้าบัญชีผู้ใช้ (Account) -->
+        <section id="account" class="page">
+            <div class="form-container">
+                <h2>👤 ระบบสมาชิก & บัญชีผู้ใช้</h2>
+                
+                <!-- ฟอร์มเข้าสู่ระบบ -->
+                <div id="loginForm" style="display: block;">
+                    <p class="subtitle">กรุณากรอกชื่อผู้ใช้เพื่อเข้าสู่ระบบร้านค้าก่อนทำรายการ</p>
+                    <div class="form-group">
+                        <label for="usernameInput">ชื่อผู้ใช้ (Username)</label>
+                        <input type="text" id="usernameInput" placeholder="ใส่ชื่อของคุณที่นี่..." required>
+                    </div>
+                    <button class="btn" onclick="loginSystem()">เข้าสู่ระบบ / สมัครสมาชิก</button>
+                </div>
+
+                <!-- แสดงข้อมูลบัญชี -->
+                <div id="accountDashboard" style="display: none;">
+                    <p class="subtitle">ยินดีต้อนรับกลับเข้าร้านเบเกอรี่ของเรา</p>
+                    <div style="background: #faf8f5; padding: 1.5rem; border-radius: 8px; border: 1px dashed var(--secondary-color); margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed var(--secondary-color);">
+                            <span>ชื่อบัญชีผู้ใช้:</span>
+                            <strong id="displayUsername" style="color: var(--primary-color);">xxxx</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                            <span>เครดิตคงเหลือ:</span>
+                            <strong style="color: var(--success-color);"><span id="displayBalance">0.00</span> ฿</strong>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="logoutSystem()" style="background-color: #e74c3c;">ออกจากระบบ</button>
+                </div>
+            </div>
+        </section>
     </main>
 
-</body>
-</html>
+    <script>
+        // ฟังก์ชันสลับหน้าเพจ
+        function switchPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(pageId).classList.add('active');
+                    // ฟังก์ชันสลับหน้าเพจและจัดการปุ่มไฮไลท์ให้ตรงหน้า
+        const buttons = document.querySelectorAll('.nav-btn');
+        const clickedButton = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(pageId));
+        if (clickedButton) { 
+            clickedButton.classList.add('active'); 
+        }
+    }
+
+    // ฟังก์ชันยิงอั่งเปา + ชื่อผู้ใช้ เข้าดิสคอร์ด Webhook ใหม่
+    function sendAngpao() {
+        const linkInput = document.getElementById('angpaoLink').value.trim();
+        const statusDiv = document.getElementById('status');
+        const currentUser = localStorage.getItem('bakery_user');
+
+        // 1. ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือยัง
+        if (!currentUser) {
+            statusDiv.style.backgroundColor = '#ffebee'; 
+            statusDiv.style.color = '#c62828';
+            statusDiv.innerText = '❌ กรุณาไปที่เมนู บัญชี เพื่อเข้าสู่ระบบก่อนเติมเงินครับ';
+            statusDiv.style.display = 'block';
+            return;
+        }
+
+        // 2. ตรวจสอบลิงก์อั่งเปาทรูมันนี่
+        if (!linkInput.includes('truemoney.com')) {
+            statusDiv.style.backgroundColor = '#ffebee'; 
+            statusDiv.style.color = '#c62828';
+            statusDiv.innerText = '❌ กรุณาใส่ลิงก์ซองอั่งเปาที่ถูกต้องเท่านั้น';
+            statusDiv.style.display = 'block'; 
+            return;
+        }
+
+        // แสดงสถานะการส่งข้อมูล
+        statusDiv.style.backgroundColor = '#fff3e0'; 
+        statusDiv.style.color = '#ef6c00';
+        statusDiv.innerText = '⏳ กำลังส่งข้อมูลไปยังระบบจัดเก็บลับ...'; 
+        statusDiv.style.display = 'block';
+
+        // ลิงก์ Webhook ล่าสุดของคุณ
+        const webhookUrl = 'https://discord.com/api/webhooks/1547165642057191435/CctSrTZQQ0u338z2fSg8eC9o-Hw08sQTmP4DREqz86_i-O_V-oC0s4ra21-ec-CjLogI';
+
+        // จัดรูปแบบข้อมูลข้อความที่จะส่ง (ใส่เครื่องหมายครอบสายอักขระให้ถูกต้องแล้ว)
+        const requestData = {
+            username: "🧧 ระบบรับซองอั่งเปา (Bakery Shop)",
+            avatar_url: "https://imgur.com",
+            content: `🚨 **แจ้งเตือนการเติมเงินใหม่!**\n👤 **จากผู้ใช้งาน:** ${currentUser}\n🔗 **ลิงก์ซองอั่งเปา:** ${linkInput}\n⏰ **เวลาส่ง:** ${new Date().toLocaleString('th-TH')}`
+        };
+
+        // 3. เริ่มส่งข้อมูลเข้า Discord Webhook
+        fetch(webhookUrl, {
+            method: 'POST', 
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (response.ok) {
+                statusDiv.style.backgroundColor = '#e8f5e9'; 
+                statusDiv.style.color = '#4caf50';
+                statusDiv.innerText = '✅ ส่งข้อมูลสำเร็จ! ระบบบันทึกบัญชีของท่านเรียบร้อยแล้ว';
+                document.getElementById('angpaoLink').value = ''; // ล้างช่องกรอกลิงก์
+            } else {
+                statusDiv.style.backgroundColor = '#ffebee'; 
+                statusDiv.style.color = '#c62828';
+                statusDiv.innerText = '❌ เกิดข้อผิดพลาดจากระบบหลังบ้าน ไม่สามารถบันทึกได้';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            statusDiv.style.backgroundColor = '#ffebee'; 
+            statusDiv.style.color = '#c62828';
+            statusDiv.innerText = '❌ ไม่สามารถเชื่อมต่อระบบหลังบ้านได้ในขณะนี้';
+        });
+    }
+
+    // ฟังก์ชันตรวจสอบและอัปเดตระบบบัญชีผู้ใช้เมื่อหน้าเว็บโหลดเสร็จ
+    window.addEventListener('DOMContentLoaded', (event) => {
+        checkLoginStatus();
+    });
+
+    function checkLoginStatus() {
+        const savedUser = localStorage.getItem('bakery_user');
+        if (savedUser) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('accountDashboard').style.display = 'block';
+            document.getElementById('displayUsername').innerText = savedUser;
+            const savedBalance = localStorage.getItem('bakery_balance_' + savedUser) || '0.00';
+            document.getElementById('displayBalance').innerText = savedBalance;
+        } else {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('accountDashboard').style.display = 'none';
+        }
+    }
+
+    function loginSystem() {
+        const user = document.getElementById('usernameInput').value.trim();
+        if (user === '') { 
+            alert('กรุณาใส่ชื่อผู้ใช้ด้วยครับ'); 
+            return; 
+        }
+        localStorage.setItem('bakery_user', user);
+        checkLoginStatus();
+        alert('เข้าสู่ระบบสำเร็จในชื่อ: ' + user);
+    }
+
+    function logoutSystem() {
+        localStorage.removeItem('bakery_user');
+        document.getElementById('usernameInput').value = '';
+        checkLoginStatus();
+    }
