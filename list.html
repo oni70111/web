@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Horizon Bakery - รายการสินค้าทั้งหมด</title>
+    <style>
+        :root {
+            --primary-color: #6d4c41;
+            --secondary-color: #d7ccc8;
+            --bg-color: #faf8f5;
+            --text-color: #4e342e;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        header { background-color: var(--primary-color); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { color: var(--bg-color); font-size: 1.5rem; }
+        nav { display: flex; gap: 1rem; }
+        nav a { color: var(--secondary-color); text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        nav a:hover, nav a.active { color: #fff; background-color: rgba(255,255,255,0.1); }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+        .product-card { background: #fff; border: 1px solid var(--secondary-color); border-radius: 8px; overflow: hidden; text-align: center; padding-bottom: 1rem; }
+        .product-img-placeholder { background-color: var(--secondary-color); height: 180px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .product-card h3 { margin: 1rem 0 0.5rem; }
+        .product-card p { color: var(--primary-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍞 Bakery Shop</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="list.html" class="active">รายการสินค้า</a>
+            <a href="#">เติมเงิน</a>
+            <a href="#">บัญชี</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>📋 รายการสินค้าทั้งหมดในร้าน</h2>
+        <br>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="product-img-placeholder">🥐 Croissant</div>
+                <h3>ครัวซองต์เนยสด</h3>
+                <p>85 ฿</p>
+            </div>
+            <div class="product-card">
+                <div class="product-img-placeholder">🍰 Strawberry Shortcake</div>
+                <h3>สตรอว์เบอร์รี่ช็อตเค้ก</h3>
+                <p>120 ฿</p>
+            </div>
+            <div class="product-card">
+                <div class="product-img-placeholder">🥖 Baguette</div>
+                <h3>ขนมปังฝรั่งเศส</h3>
+                <p>65 ฿</p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
